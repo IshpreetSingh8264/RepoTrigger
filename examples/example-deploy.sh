@@ -1,48 +1,21 @@
 #!/bin/bash
 
-# Example deployment script that can be used with the Generic CD Container
-# This script demonstrates common deployment patterns
+# This script polls a public API and logs the result to a file, so you can verify execution.
 
-set -e  # Exit on any error
+set -e
 
-echo "🚀 Starting deployment process..."
+API_URL="https://api.github.com/zen"
+LOG_FILE="/app/repo/examples/poll_test.log"
 
-# Example: Install/update dependencies
-if [ -f "package.json" ]; then
-    echo "📦 Installing Node.js dependencies..."
-    npm install --production
-fi
+# Print a start message
 
-if [ -f "requirements.txt" ]; then
-    echo "🐍 Installing Python dependencies..."
-    pip install -r requirements.txt
-fi
+echo "Polling $API_URL ..."
 
-if [ -f "composer.json" ]; then
-    echo "🎼 Installing PHP dependencies..."
-    composer install --no-dev --optimize-autoloader
-fi
+# Fetch the API response
+RESPONSE=$(curl -s "$API_URL")
 
-# Example: Build the application
-if [ -f "package.json" ] && grep -q "build" package.json; then
-    echo "🔨 Building the application..."
-    npm run build
-fi
+# Log the response with a timestamp
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+echo "$TIMESTAMP - API response: $RESPONSE" | tee -a "$LOG_FILE"
 
-# Example: Run database migrations
-if [ -f "migrate.sh" ]; then
-    echo "🗄️ Running database migrations..."
-    ./migrate.sh
-fi
-
-# Example: Restart services (this would typically be done outside the container)
-echo "🔄 Deployment script completed successfully!"
-echo "💡 Note: In a real deployment, you might restart services, update load balancers, etc."
-
-# Example: Health check
-if command -v curl >/dev/null 2>&1; then
-    echo "🏥 Performing health check..."
-    # curl -f http://localhost:8080/health || echo "⚠️ Health check failed"
-fi
-
-echo "✅ Deployment process finished!"
+echo "Polling complete. Check $LOG_FILE for results."
