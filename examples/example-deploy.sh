@@ -10,7 +10,7 @@ LOG_FILE="/app/repo/examples/poll_test.log"
 # Print a start message
 
 echo "Polling $API_URL ..."
-
+echo "Showing Jaismeen How Continous deployment works"
 # Fetch the API response
 RESPONSE=$(curl -s "$API_URL")
 
